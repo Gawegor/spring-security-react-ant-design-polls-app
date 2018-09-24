@@ -14,7 +14,7 @@ target/
 *.iws
 *.iml
 *.ipr
-reble.xml
+rebel.xml
 
 ### NetBeans ###
 nbproject/private/
