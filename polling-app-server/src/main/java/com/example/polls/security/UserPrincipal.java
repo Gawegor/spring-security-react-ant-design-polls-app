@@ -35,6 +35,11 @@ public class UserPrincipal implements UserDetails {
         this.authorities = authorities;
     }
 
+    /*
+     * 使用一个User创建一个UserDetails
+     * 其中authorities用到了Java 8 的 Stream.map()，
+     * 遍历user的Roles并转换为SimpleGrantedAuthority
+     */
     public static UserPrincipal create(User user) {
         List<GrantedAuthority> authorities = user.getRoles().stream().map(role ->
                 new SimpleGrantedAuthority(role.getName().name())

@@ -10,6 +10,10 @@ import javax.persistence.MappedSuperclass;
 import java.io.Serializable;
 import java.time.Instant;
 
+/**
+ * 用于审计
+ */
+// 标记@MappedSuperclass的类不会映射到数据库中，但是他的属性会作为子类的字段映射到数据库中
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 @JsonIgnoreProperties(

@@ -1,5 +1,8 @@
 package com.example.polls.payload;
 
+/**
+ * 用户概要响应payload
+ */
 public class UserSummary {
     private Long id;
     private String username;

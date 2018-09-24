@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 
 /**
+ * 一个JWT的公用类，可以生成Token，通过Token获取用户id
+ *
  * Created by rajeevkumarsingh on 19/08/17.
  */
 @Component

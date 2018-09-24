@@ -3,6 +3,9 @@ package com.example.polls.payload;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
 
+/**
+ * 用在PollRequest中的时间长度
+ */
 public class PollLength {
     @NotNull
     @Max(7)

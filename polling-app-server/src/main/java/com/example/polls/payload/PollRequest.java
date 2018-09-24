@@ -6,6 +6,9 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
 
+/**
+ * Poll的请求payload，则用户请求Poll时必须的数据的打包
+ */
 public class PollRequest {
     @NotBlank
     @Size(max = 140)

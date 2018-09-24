@@ -7,6 +7,7 @@ import org.springframework.data.annotation.LastModifiedBy;
 import javax.persistence.MappedSuperclass;
 
 /**
+ * JPA的审计功能，它将自动记录用户的创建和更新时间
  * Created by rajeevkumarsingh on 19/08/17.
  */
 

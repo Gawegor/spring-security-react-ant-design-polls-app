@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
+ * 所有未被授权的用户访问授权资源时抛出的401异常，都会执行这个方法.
+ * 在这个例子，我们简单地响应了401错误
  * Created by rajeevkumarsingh on 07/12/17.
  */
 @Component

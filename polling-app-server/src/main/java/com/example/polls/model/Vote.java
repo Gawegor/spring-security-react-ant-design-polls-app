@@ -3,6 +3,9 @@ package com.example.polls.model;
 import com.example.polls.model.audit.DateAudit;
 import javax.persistence.*;
 
+/**
+ * 选票实体类。它表记录了谁，参加了那个选举，投了那个选项.
+ */
 @Entity
 @Table(name = "votes", uniqueConstraints = {
         @UniqueConstraint(columnNames = {

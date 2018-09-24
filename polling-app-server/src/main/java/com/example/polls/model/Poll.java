@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 选举体类。属性有：ID, 问题, 选项列表和过期时间
  * Created by rajeevkumarsingh on 20/11/17.
  */
 @Entity

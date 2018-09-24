@@ -5,6 +5,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import java.time.Instant;
 import java.util.List;
 
+/**
+ * Poll的响应Payload, 响应所需的Poll的数据的打包
+ */
 public class PollResponse {
     private Long id;
     private String question;

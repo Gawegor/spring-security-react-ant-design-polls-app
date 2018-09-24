@@ -6,6 +6,7 @@ import javax.validation.constraints.Size;
 import java.util.Objects;
 
 /**
+ * 选举中的宣杭实体类, 属性有：选项内容和关联的选举.
  * Created by rajeevkumarsingh on 20/11/17.
  */
 

@@ -1,5 +1,8 @@
 package com.example.polls.payload;
 
+/**
+ * 判定用户名和email是否可用的响应
+ */
 public class UserIdentityAvailability {
     private Boolean available;
 

@@ -45,18 +45,30 @@ public class PollService {
 
     private static final Logger logger = LoggerFactory.getLogger(PollService.class);
 
+    /**
+     * 获取所有的选举, 以分页PollResponse的格式返回
+     *
+     * @param currentUser
+     * @param page
+     * @param size
+     * @return
+     */
     public PagedResponse<PollResponse> getAllPolls(UserPrincipal currentUser, int page, int size) {
+        // 验证分页参数
         validatePageNumberAndSize(page, size);
 
+        // 索引Polls
         // Retrieve Polls
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "createdAt");
         Page<Poll> polls = pollRepository.findAll(pageable);
 
+        // 返回空结果
         if(polls.getNumberOfElements() == 0) {
             return new PagedResponse<>(Collections.emptyList(), polls.getNumber(),
                     polls.getSize(), polls.getTotalElements(), polls.getTotalPages(), polls.isLast());
         }
 
+        // 映射Poll的选票量和创建者详情到PollResponse
         // Map Polls to PollResponses containing vote counts and poll creator details
         List<Long> pollIds = polls.map(Poll::getId).getContent();
         Map<Long, Long> choiceVoteCountMap = getChoiceVoteCountMap(pollIds);
@@ -74,6 +86,15 @@ public class PollService {
                 polls.getSize(), polls.getTotalElements(), polls.getTotalPages(), polls.isLast());
     }
 
+    /**
+     * 获取用户创建的所有Poll(以分页PollResponse的格式返回）
+     *
+     * @param username
+     * @param currentUser
+     * @param page
+     * @param size
+     * @return
+     */
     public PagedResponse<PollResponse> getPollsCreatedBy(String username, UserPrincipal currentUser, int page, int size) {
         validatePageNumberAndSize(page, size);
 
@@ -89,6 +110,7 @@ public class PollService {
                     polls.getSize(), polls.getTotalElements(), polls.getTotalPages(), polls.isLast());
         }
 
+        // 映射Poll的选票量和创建者详情到PollResponse
         // Map Polls to PollResponses containing vote counts and poll creator details
         List<Long> pollIds = polls.map(Poll::getId).getContent();
         Map<Long, Long> choiceVoteCountMap = getChoiceVoteCountMap(pollIds);
@@ -105,6 +127,15 @@ public class PollService {
                 polls.getSize(), polls.getTotalElements(), polls.getTotalPages(), polls.isLast());
     }
 
+    /**
+     * 获取用户参与过的所有选举
+     *
+     * @param username
+     * @param currentUser
+     * @param page
+     * @param size
+     * @return
+     */
     public PagedResponse<PollResponse> getPollsVotedBy(String username, UserPrincipal currentUser, int page, int size) {
         validatePageNumberAndSize(page, size);
 
@@ -143,6 +174,12 @@ public class PollService {
     }
 
 
+    /**
+     * 发起一个投票
+     *
+     * @param pollRequest
+     * @return
+     */
     public Poll createPoll(PollRequest pollRequest) {
         Poll poll = new Poll();
         poll.setQuestion(pollRequest.getQuestion());
@@ -160,6 +197,13 @@ public class PollService {
         return pollRepository.save(poll);
     }
 
+    /**
+     * 获取一个Poll
+     *
+     * @param pollId
+     * @param currentUser
+     * @return
+     */
     public PollResponse getPollById(Long pollId, UserPrincipal currentUser) {
         Poll poll = pollRepository.findById(pollId).orElseThrow(
                 () -> new ResourceNotFoundException("Poll", "id", pollId));
@@ -184,16 +228,26 @@ public class PollService {
                 creator, userVote != null ? userVote.getChoice().getId(): null);
     }
 
+    /**
+     * 投票,并返回更新后的Poll
+     *
+     * @param pollId      参与的选举
+     * @param voteRequest 投了的选项
+     * @param currentUser
+     * @return
+     */
     public PollResponse castVoteAndGetUpdatedPoll(Long pollId, VoteRequest voteRequest, UserPrincipal currentUser) {
         Poll poll = pollRepository.findById(pollId)
                 .orElseThrow(() -> new ResourceNotFoundException("Poll", "id", pollId));
 
+        // 判断选举是否已经过期
         if(poll.getExpirationDateTime().isBefore(Instant.now())) {
             throw new BadRequestException("Sorry! This Poll has already expired");
         }
 
         User user = userRepository.getOne(currentUser.getId());
 
+        // 在Poll找出用户投了那项
         Choice selectedChoice = poll.getChoices().stream()
                 .filter(choice -> choice.getId().equals(voteRequest.getChoiceId()))
                 .findFirst()
@@ -227,6 +281,12 @@ public class PollService {
     }
 
 
+    /**
+     * 验证分页的page(页码)和size(每页的数据量)的合法性
+     *
+     * @param page
+     * @param size
+     */
     private void validatePageNumberAndSize(int page, int size) {
         if(page < 0) {
             throw new BadRequestException("Page number cannot be less than zero.");
@@ -237,6 +297,12 @@ public class PollService {
         }
     }
 
+    /**
+     * 获取一个Map，键为选项给定poll列表的所有Choice，值为这些Choice的Vote数量
+     *
+     * @param pollIds
+     * @return
+     */
     private Map<Long, Long> getChoiceVoteCountMap(List<Long> pollIds) {
         // Retrieve Vote Counts of every Choice belonging to the given pollIds
         List<ChoiceVoteCount> votes = voteRepository.countByPollIdInGroupByChoiceId(pollIds);
@@ -247,6 +313,13 @@ public class PollService {
         return choiceVotesMap;
     }
 
+    /**
+     * 获取一个Map，键为当前用户参与过的给定的PollId，值为当前用户选了的项
+     *
+     * @param currentUser
+     * @param pollIds
+     * @return
+     */
     private Map<Long, Long> getPollUserVoteMap(UserPrincipal currentUser, List<Long> pollIds) {
         // Retrieve Votes done by the logged in user to the given pollIds
         Map<Long, Long> pollUserVoteMap = null;
@@ -259,6 +332,12 @@ public class PollService {
         return pollUserVoteMap;
     }
 
+    /**
+     * 返回一个Map，键为给定polls创建者的id，值为创建者详情
+     *
+     * @param polls
+     * @return
+     */
     Map<Long, User> getPollCreatorMap(List<Poll> polls) {
         // Get Poll Creator details of the given list of polls
         List<Long> creatorIds = polls.stream()

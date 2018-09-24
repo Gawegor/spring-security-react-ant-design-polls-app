@@ -2,6 +2,9 @@ package com.example.polls.payload;
 
 import java.time.Instant;
 
+/**
+ * 用户详情响应payload
+ */
 public class UserProfile {
     private Long id;
     private String username;

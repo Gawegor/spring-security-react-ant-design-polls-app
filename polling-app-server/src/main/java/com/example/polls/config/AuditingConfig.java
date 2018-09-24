@@ -11,6 +11,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Optional;
 
+/**
+ * JPA的审计功能设置
+ * @author Gawegor gawegor@outlook.com
+ */
 @Configuration
 @EnableJpaAuditing
 public class AuditingConfig {

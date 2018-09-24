@@ -2,6 +2,11 @@ package com.example.polls.payload;
 
 import java.util.List;
 
+/**
+ * 用于以分页的形式打包响应数据集合
+ *
+ * @param <T>
+ */
 public class PagedResponse<T> {
 
     private List<T> content;

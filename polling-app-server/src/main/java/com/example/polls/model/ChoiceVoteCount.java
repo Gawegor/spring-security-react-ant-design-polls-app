@@ -1,5 +1,8 @@
 package com.example.polls.model;
 
+/**
+ * 选项投票的实体, 用于VoteRepository返回值
+ */
 public class ChoiceVoteCount {
     private Long choiceId;
     private Long voteCount;

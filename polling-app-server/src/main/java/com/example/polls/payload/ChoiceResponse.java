@@ -1,5 +1,8 @@
 package com.example.polls.payload;
 
+/**
+ * 选项响应的payload
+ */
 public class ChoiceResponse {
     private long id;
     private String text;

@@ -11,6 +11,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
+ * 提供查找用户服务给Spring Security
+ * 需要实现了UserDetailsService接口和loadUserBysername方法
+ *
  * Created by rajeevkumarsingh on 02/08/17.
  */
 
@@ -24,7 +27,10 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Transactional
     public UserDetails loadUserByUsername(String usernameOrEmail)
             throws UsernameNotFoundException {
-        // Let people login with either username or email
+        /* 可以让用户使用username和email其中一个登陆
+         * 使用了Java 8 Optional的特性，如果为null则抛出一个异常
+         * Let people login with either username or email
+         */
         User user = userRepository.findByUsernameOrEmail(usernameOrEmail, usernameOrEmail)
                 .orElseThrow(() ->
                         new UsernameNotFoundException("User not found with username or email : " + usernameOrEmail)
@@ -33,6 +39,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         return UserPrincipal.create(user);
     }
 
+    // 用在 JWTAuthenticationFilter中
     @Transactional
     public UserDetails loadUserById(Long id) {
         User user = userRepository.findById(id).orElseThrow(

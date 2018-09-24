@@ -11,8 +11,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * 实体转换工具, 例如将Entity转换成Payload
+ */
 public class ModelMapper {
 
+    /**
+     * 将Poll转换成PollRespone
+     * @param poll
+     * @param choiceVotesMap 选项的票数
+     * @param creator 投票创建者
+     * @param userVote 用户投了的选项
+     */
     public static PollResponse mapPollToPollResponse(Poll poll, Map<Long, Long> choiceVotesMap, User creator, Long userVote) {
         PollResponse pollResponse = new PollResponse();
         pollResponse.setId(poll.getId());
@@ -27,6 +37,7 @@ public class ModelMapper {
             choiceResponse.setId(choice.getId());
             choiceResponse.setText(choice.getText());
 
+            // 如果给定的choiceVotesMap有这个选项，就用这个Map的值所谓选项选票数
             if(choiceVotesMap.containsKey(choice.getId())) {
                 choiceResponse.setVoteCount(choiceVotesMap.get(choice.getId()));
             } else {
